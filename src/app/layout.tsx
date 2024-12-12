@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Inter } from 'next/font/google'
 import "./globals.css";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  ClerkProvider,
+ 
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+} from '@clerk/nextjs'
+import FullScreenLaoder from "@/components/FullScreenLaoder";
+const inter = Inter({
+  subsets: ['latin']
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,13 +24,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
+
+
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+
+      <html lang="en">
+        <body className={inter.className}   >
+          <NuqsAdapter >
+            <ClerkLoading>
+              <FullScreenLaoder label="Auth loading..." />
+            </ClerkLoading>
+            <ClerkLoaded>{children}</ClerkLoaded>
+
+          </NuqsAdapter>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
